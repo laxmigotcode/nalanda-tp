@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiter Dashboard — Nalanda T&P Cell</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10V20H15V14H9V20H3V10Z" fill="#EFE6D8"/></svg></span><span>Nalanda T&amp;P<small>College of Engineering, Chandi</small></span></a>
+    <ul class="nav-links"><li><a href="index.html">← Back to site</a></li></ul>
+    <div class="nav-cta"><button class="btn btn-ghost btn-sm" data-logout>Log out</button></div>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="dash-shell">
+  <aside class="dash-side">
+    <div class="who"><b id="who-company">—</b><span id="who-name">Recruiter</span></div>
+    <nav class="dash-nav">
+      <a href="#" data-tab="overview" class="active">◆ Overview</a>
+      <a href="#" data-tab="post">◆ Post a Drive</a>
+      <a href="#" data-tab="analytics">◆ Funnel Analytics</a>
+      <a href="#" data-tab="applicants">◆ Applicants</a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- OVERVIEW -->
+    <section class="tab-panel active" id="tab-overview">
+      <p class="eyebrow">Hiring snapshot</p>
+      <h2>Welcome, <span id="hello-name">Recruiter</span></h2>
+      <div class="kpi-row">
+        <div class="kpi"><span class="num" id="kpi-drives">4</span><div class="lbl">Drives posted</div><div class="delta">on Nalanda T&amp;P</div></div>
+        <div class="kpi"><span class="num" id="kpi-applied">858</span><div class="lbl">Total applicants</div></div>
+        <div class="kpi"><span class="num" id="kpi-offers">91</span><div class="lbl">Offers extended</div></div>
+        <div class="kpi"><span class="num">6.2 days</span><div class="lbl">Avg. time to offer</div></div>
+      </div>
+      <div class="card">
+        <h3>Offers by company, this season</h3>
+        <div id="overview-bars"></div>
+      </div>
+    </section>
+
+    <!-- POST A DRIVE -->
+    <section class="tab-panel" id="tab-post">
+      <p class="eyebrow">Goes live on the student drive calendar instantly</p>
+      <h2>Post a recruitment drive</h2>
+      <div class="card" style="max-width:600px;">
+        <form id="post-form">
+          <div class="field-row">
+            <div class="field"><label>Role title</label><input required id="d-role" placeholder="e.g. SDE-1"></div>
+            <div class="field"><label>Sector</label><input required id="d-sector" placeholder="e.g. Product"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>CTC min (LPA)</label><input required id="d-min" type="number" step="0.1"></div>
+            <div class="field"><label>CTC max (LPA)</label><input required id="d-max" type="number" step="0.1"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Drive date</label><input required id="d-date" type="date"></div>
+            <div class="field"><label>Openings</label><input required id="d-openings" type="number"></div>
+          </div>
+          <div class="field"><label>Eligibility</label><input required id="d-eligibility" placeholder="e.g. CSE, IT — CGPA 6.5+"></div>
+          <div class="field"><label>Drive description</label><textarea id="d-desc" rows="3" placeholder="Rounds, process, anything students should know"></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Publish drive</button>
+        </form>
+      </div>
+      <div id="posted-drives" style="margin-top:24px;"></div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="tab-panel" id="tab-analytics">
+      <p class="eyebrow">Application funnel, per drive</p>
+      <h2>Funnel Analytics</h2>
+      <div class="field" style="max-width:320px;">
+        <label>Select drive</label>
+        <select id="funnel-select"></select>
+      </div>
+      <div class="grid grid-2" style="align-items:start;">
+        <div class="card"><h3>Applied → Offered</h3><div id="funnel-chart"></div></div>
+        <div class="card">
+          <h3>Conversion summary</h3>
+          <div id="funnel-summary"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APPLICANTS -->
+    <section class="tab-panel" id="tab-applicants">
+      <p class="eyebrow">Mock applicant records for this demo</p>
+      <h2>Applicants</h2>
+      <table class="ledger-table" id="applicants-table">
+        <thead><tr><th>Name</th><th>Branch</th><th>CGPA</th><th>Match</th><th>Status</th><th></th></tr></thead>
+        <tbody id="applicants-body"></tbody>
+      </table>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script>
+const session = tpRequireSession("recruiter");
+if (session) {
+  document.getElementById("who-company").textContent = session.company || "Recruiter Co.";
+  document.getElementById("who-name").textContent = session.name;
+  document.getElementById("hello-name").textContent = session.name.split(" ")[0];
+}
+
+document.querySelectorAll(".dash-nav a").forEach(a => a.addEventListener("click", e => {
+  e.preventDefault();
+  document.querySelectorAll(".dash-nav a").forEach(x => x.classList.toggle("active", x === a));
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + a.dataset.tab));
+}));
+
+/* ---------- Overview bars ---------- */
+renderBars("overview-bars", Object.entries(TP_DATA.funnels).map(([name, f]) => ({ label: name, value: f.offered, max: 70 })));
+
+/* ---------- Post a drive (demo, stored locally) ---------- */
+const POSTED_KEY = "tp_recruiter_drives";
+const getPosted = () => JSON.parse(localStorage.getItem(POSTED_KEY) || "[]");
+const setPosted = (d) => localStorage.setItem(POSTED_KEY, JSON.stringify(d));
+
+function renderPosted() {
+  const list = getPosted();
+  document.getElementById("kpi-drives").textContent = 4 + list.length;
+  document.getElementById("posted-drives").innerHTML = list.length ? `<h3>Your posted drives</h3>` + list.map(d => `
+    <div class="card" style="margin-bottom:12px;">
+      <div class="flex-between">
+        <div><b>${d.role}</b><p class="muted" style="font-size:.84rem;margin:4px 0 0;">${d.sector} · ${ctcRange(Number(d.min), Number(d.max))} · ${d.date}</p></div>
+        <span class="badge badge-open">Live</span>
+      </div>
+    </div>`).join("") : "";
+}
+renderPosted();
+
+document.getElementById("post-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const list = getPosted();
+  list.push({
+    role: document.getElementById("d-role").value,
+    sector: document.getElementById("d-sector").value,
+    min: document.getElementById("d-min").value,
+    max: document.getElementById("d-max").value,
+    date: document.getElementById("d-date").value,
+    openings: document.getElementById("d-openings").value,
+    eligibility: document.getElementById("d-eligibility").value,
+    desc: document.getElementById("d-desc").value
+  });
+  setPosted(list);
+  renderPosted();
+  toast("Drive published — it now appears on the student drive calendar.");
+  e.target.reset();
+});
+
+/* ---------- Funnel analytics ---------- */
+const funnelSel = document.getElementById("funnel-select");
+funnelSel.innerHTML = Object.keys(TP_DATA.funnels).map(c => `<option>${c}</option>`).join("");
+function renderFunnelFor(company) {
+  const f = TP_DATA.funnels[company];
+  renderFunnel("funnel-chart", [
+    { label: "Applied", value: f.applied },
+    { label: "Shortlisted", value: f.shortlisted },
+    { label: "Interviewed", value: f.interviewed },
+    { label: "Offered", value: f.offered }
+  ]);
+  document.getElementById("funnel-summary").innerHTML = `
+    <table class="ledger-table">
+      <tr><td class="muted">Applied</td><td><b>${f.applied}</b></td></tr>
+      <tr><td class="muted">Shortlist rate</td><td>${Math.round(f.shortlisted/f.applied*100)}%</td></tr>
+      <tr><td class="muted">Interview rate</td><td>${Math.round(f.interviewed/f.shortlisted*100)}%</td></tr>
+      <tr><td class="muted">Offer rate</td><td>${Math.round(f.offered/f.interviewed*100)}%</td></tr>
+      <tr><td class="muted">Overall conversion</td><td><b style="color:var(--brick);">${Math.round(f.offered/f.applied*100)}%</b></td></tr>
+    </table>`;
+}
+funnelSel.addEventListener("change", () => renderFunnelFor(funnelSel.value));
+renderFunnelFor(funnelSel.value);
+
+/* ---------- Applicants (mock) ---------- */
+const MOCK_APPLICANTS = [
+  { name: "Aditi Sharma", branch: "CSE", cgpa: 8.6, match: 92 },
+  { name: "Rohan Das", branch: "IT", cgpa: 7.9, match: 87 },
+  { name: "Neha Kumari", branch: "ECE", cgpa: 8.1, match: 74 },
+  { name: "Saurabh Raj", branch: "CSE", cgpa: 7.2, match: 69 },
+  { name: "Pooja Singh", branch: "EEE", cgpa: 8.8, match: 81 },
+  { name: "Vikas Anand", branch: "ME", cgpa: 7.5, match: 58 }
+];
+let applicantState = MOCK_APPLICANTS.map(a => ({ ...a, status: "Applied" }));
+
+function renderApplicants() {
+  document.getElementById("applicants-body").innerHTML = applicantState.map((a, i) => `
+    <tr>
+      <td><b>${a.name}</b></td><td>${a.branch}</td><td>${a.cgpa}</td>
+      <td><span class="match-score">${a.match}%</span></td>
+      <td><span class="badge ${a.status === 'Shortlisted' ? 'badge-open' : a.status === 'Rejected' ? 'badge-closed' : 'badge-applied'}">${a.status}</span></td>
+      <td class="flex gap-8">
+        <button class="btn btn-ghost btn-sm" data-shortlist="${i}">Shortlist</button>
+        <button class="btn btn-ghost btn-sm" data-reject="${i}">Reject</button>
+      </td>
+    </tr>`).join("");
+}
+renderApplicants();
+
+document.getElementById("applicants-body").addEventListener("click", e => {
+  const s = e.target.closest("[data-shortlist]"), r = e.target.closest("[data-reject]");
+  if (s) { applicantState[s.dataset.shortlist].status = "Shortlisted"; toast(`${applicantState[s.dataset.shortlist].name} shortlisted.`); }
+  if (r) { applicantState[r.dataset.reject].status = "Rejected"; toast(`${applicantState[r.dataset.reject].name} marked as rejected.`); }
+  renderApplicants();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard — Nalanda T&P Cell</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .slider-row { display:grid; grid-template-columns: 140px 1fr 40px; align-items:center; gap:12px; margin-bottom:14px; }
+  .slider-row input[type=range] { width:100%; accent-color: var(--brick); }
+  .slider-row span.val { font-family:var(--mono); font-size:.82rem; text-align:right; color:var(--brick); font-weight:600; }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10V20H15V14H9V20H3V10Z" fill="#EFE6D8"/></svg></span><span>Nalanda T&amp;P<small>College of Engineering, Chandi</small></span></a>
+    <ul class="nav-links"><li><a href="index.html">← Back to site</a></li></ul>
+    <div class="nav-cta"><button class="btn btn-ghost btn-sm" data-logout>Log out</button></div>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="dash-shell">
+  <aside class="dash-side">
+    <div class="who"><b id="who-name">—</b><span>Student</span></div>
+    <nav class="dash-nav">
+      <a href="#" data-tab="overview" class="active">◆ Overview</a>
+      <a href="#" data-tab="match">◆ AI Job Match</a>
+      <a href="#" data-tab="gap">◆ Skill Gap Analyzer</a>
+      <a href="#" data-tab="interview">◆ Mock Interviews</a>
+      <a href="#" data-tab="apps">◆ My Applications</a>
+      <a href="#" data-tab="profile">◆ Profile</a>
+    </nav>
+  </aside>
+
+  <main class="dash-main">
+
+    <!-- OVERVIEW -->
+    <section class="tab-panel active" id="tab-overview">
+      <p class="eyebrow">Welcome back</p>
+      <h2 id="hello-name">Hello!</h2>
+      <div class="kpi-row">
+        <div class="kpi"><span class="num" id="kpi-apps">0</span><div class="lbl">Active applications</div></div>
+        <div class="kpi"><span class="num" id="kpi-match">—</span><div class="lbl">Best AI match score</div></div>
+        <div class="kpi"><span class="num" id="kpi-interviews">0</span><div class="lbl">Mock interviews booked</div></div>
+        <div class="kpi"><span class="num" id="kpi-complete">40%</span><div class="lbl">Profile completeness</div></div>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3>Next up on the ledger</h3>
+          <div data-ledger></div>
+        </div>
+        <div class="card">
+          <h3>Quick actions</h3>
+          <p class="muted" style="font-size:.88rem;">Set your skills once and both the recommender and the gap analyzer use it.</p>
+          <div class="flex gap-12" style="flex-wrap:wrap;">
+            <button class="btn btn-primary btn-sm" data-goto="match">Run AI Job Match</button>
+            <button class="btn btn-outline btn-sm" data-goto="gap">Analyze Skill Gap</button>
+            <button class="btn btn-outline btn-sm" data-goto="interview">Book Mock Interview</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI JOB MATCH -->
+    <section class="tab-panel" id="tab-match">
+      <p class="eyebrow">Rule-based recommendation engine</p>
+      <h2>AI Job Match</h2>
+      <p class="muted" style="max-width:60ch;">Rate yourself on each skill. The engine weighs your profile against what every open role on campus actually looks for, and ranks the best fits.</p>
+      <div class="grid" style="grid-template-columns:1fr 1.3fr;gap:32px;align-items:start;">
+        <div class="card">
+          <h3>Your skill profile</h3>
+          <div id="skill-sliders"></div>
+          <button class="btn btn-primary btn-block" id="run-match">Get recommendations</button>
+        </div>
+        <div>
+          <div id="match-results" class="grid" style="grid-template-columns:1fr;gap:14px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILL GAP ANALYZER -->
+    <section class="tab-panel" id="tab-gap">
+      <p class="eyebrow">Close the gap before the interview does</p>
+      <h2>Skill Gap Analyzer</h2>
+      <div class="field" style="max-width:360px;">
+        <label>Target role</label>
+        <select id="gap-role"></select>
+      </div>
+      <div class="grid" style="grid-template-columns:1.3fr 1fr;gap:32px;align-items:start;">
+        <div class="card">
+          <h3>Required vs. your level</h3>
+          <div id="gap-bars"></div>
+        </div>
+        <div class="card">
+          <h3>Priority fixes</h3>
+          <div id="gap-priority"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOCK INTERVIEWS -->
+    <section class="tab-panel" id="tab-interview">
+      <p class="eyebrow">Recorded · Reviewed by a T&amp;P mentor</p>
+      <h2>Mock Interview Scheduler</h2>
+      <div class="grid" style="grid-template-columns:1fr 1.2fr;gap:32px;align-items:start;">
+        <div class="card">
+          <h3>Book a slot</h3>
+          <form id="mock-form">
+            <div class="field"><label>Interview type</label>
+              <select id="m-type"><option>Technical (DSA)</option><option>HR / Behavioural</option><option>Group Discussion</option><option>Case Study</option></select>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Date</label><input type="date" id="m-date" required></div>
+              <div class="field"><label>Time</label><input type="time" id="m-time" required></div>
+            </div>
+            <div class="field" style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="m-record" checked style="width:auto;">
+              <label style="margin:0;" for="m-record">Record this session for feedback review</label>
+            </div>
+            <button class="btn btn-primary btn-block" type="submit">Book mock interview</button>
+          </form>
+        </div>
+        <div>
+          <h3 style="margin-bottom:14px;">Your sessions</h3>
+          <div id="mock-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MY APPLICATIONS -->
+    <section class="tab-panel" id="tab-apps">
+      <p class="eyebrow">Synced with the drive calendar</p>
+      <h2>My Applications</h2>
+      <table class="ledger-table" id="apps-table">
+        <thead><tr><th>Company</th><th>Drive date</th><th>Status</th></tr></thead>
+        <tbody id="apps-body"></tbody>
+      </table>
+      <p class="muted" id="apps-empty" style="margin-top:14px;">No applications yet — <a href="drives.html" style="color:var(--brick);">browse the drive calendar</a>.</p>
+    </section>
+
+    <!-- PROFILE -->
+    <section class="tab-panel" id="tab-profile">
+      <p class="eyebrow">Keeps recruiters and the matcher in sync</p>
+      <h2>Profile</h2>
+      <div class="card" style="max-width:520px;">
+        <form id="profile-form">
+          <div class="field-row">
+            <div class="field"><label>Full name</label><input id="p-name"></div>
+            <div class="field"><label>Branch</label><input id="p-branch" placeholder="e.g. CSE"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>CGPA</label><input id="p-cgpa" placeholder="e.g. 8.2"></div>
+            <div class="field"><label>Graduating year</label><input id="p-year" placeholder="e.g. 2027"></div>
+          </div>
+          <div class="field"><label>Email</label><input id="p-email" disabled></div>
+          <button class="btn btn-primary btn-block" type="submit">Save profile</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+const session = tpRequireSession("student");
+if (session) {
+  document.getElementById("who-name").textContent = session.name;
+  document.getElementById("hello-name").textContent = `Hello, ${session.name.split(" ")[0]}!`;
+  document.getElementById("p-name").value = session.name;
+  document.getElementById("p-email").value = session.email;
+}
+
+/* ---------- Tab switching ---------- */
+document.querySelectorAll(".dash-nav a").forEach(a => a.addEventListener("click", e => {
+  e.preventDefault();
+  goto(a.dataset.tab);
+}));
+document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => goto(b.dataset.goto)));
+function goto(tab) {
+  document.querySelectorAll(".dash-nav a").forEach(a => a.classList.toggle("active", a.dataset.tab === tab));
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", p.id === "tab-" + tab));
+}
+
+/* ---------- Skill profile (shared state) ---------- */
+const SKILL_KEY = "tp_skills";
+function getSkills() {
+  return JSON.parse(localStorage.getItem(SKILL_KEY) || "null") ||
+    Object.fromEntries(TP_DATA.skillCatalog.map(s => [s, 50]));
+}
+function setSkills(sk) { localStorage.setItem(SKILL_KEY, JSON.stringify(sk)); }
+
+function renderSliders() {
+  const skills = getSkills();
+  document.getElementById("skill-sliders").innerHTML = TP_DATA.skillCatalog.map(s => `
+    <div class="slider-row">
+      <span style="font-size:.84rem;">${s}</span>
+      <input type="range" min="0" max="100" value="${skills[s]}" data-skill="${s}">
+      <span class="val" data-val-for="${s}">${skills[s]}</span>
+    </div>
+  `).join("");
+  document.querySelectorAll("[data-skill]").forEach(inp => {
+    inp.addEventListener("input", () => {
+      document.querySelector(`[data-val-for="${inp.dataset.skill}"]`).textContent = inp.value;
+    });
+  });
+}
+renderSliders();
+
+/* ---------- AI Job Match (rule-based scoring engine) ---------- */
+document.getElementById("run-match").addEventListener("click", () => {
+  const skills = {};
+  document.querySelectorAll("[data-skill]").forEach(inp => skills[inp.dataset.skill] = Number(inp.value));
+  setSkills(skills);
+
+  const scored = TP_DATA.companies.filter(c => c.status !== "closed").map(c => {
+    const weights = TP_DATA.roleWeights[c.role] || {};
+    const keys = Object.keys(weights);
+    let raw = 0, max = 0;
+    keys.forEach(k => { raw += (skills[k] || 0) * weights[k]; max += 100 * weights[k]; });
+    const score = max ? Math.round((raw / max) * 100) : 50;
+    return { ...c, score };
+  }).sort((a, b) => b.score - a.score);
+
+  document.getElementById("match-results").innerHTML = scored.map(c => `
+    <div class="card match-card">
+      <div class="flex-between">
+        <div>
+          <h3 style="margin-bottom:2px;">${c.name}</h3>
+          <p class="muted" style="font-size:.84rem;margin:0;">${c.role} · ${ctcRange(c.ctcMin, c.ctcMax)}</p>
+        </div>
+        <div class="text-center">
+          <div class="match-score">${c.score}%</div>
+          <span class="muted" style="font-size:.68rem;font-family:var(--mono);">match</span>
+        </div>
+      </div>
+      <div class="skill-bar" style="margin-top:12px;"><i style="width:${c.score}%;"></i></div>
+      <div class="flex-between" style="margin-top:12px;">
+        <span class="badge badge-${c.status}">${c.status}</span>
+        <a href="companies.html#${c.id}" class="btn btn-ghost btn-sm">View profile</a>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("kpi-match").textContent = scored[0] ? scored[0].score + "%" : "—";
+  toast("Recommendations updated from your skill profile.");
+});
+
+/* ---------- Skill Gap Analyzer ---------- */
+const gapRoleSel = document.getElementById("gap-role");
+gapRoleSel.innerHTML = Object.keys(TP_DATA.roleWeights).map(r => `<option>${r}</option>`).join("");
+function renderGap() {
+  const role = gapRoleSel.value;
+  const weights = TP_DATA.roleWeights[role];
+  const skills = getSkills();
+  const rows = Object.entries(weights).map(([skill, w]) => {
+    const required = Math.round(w * 100);
+    const current = skills[skill] || 0;
+    const gap = Math.max(0, required - current);
+    return { skill, required, current, gap };
+  }).sort((a, b) => b.gap - a.gap);
+
+  document.getElementById("gap-bars").innerHTML = rows.map(r => `
+    <div class="skill-row">
+      <div class="flex-between"><span>${r.skill}</span><span class="muted" style="font-family:var(--mono);font-size:.78rem;">${r.current} / ${r.required} required</span></div>
+      <div class="skill-bar"><i style="width:${r.current}%;"></i></div>
+      <div class="skill-bar gap" style="margin-top:4px;"><i style="width:${r.required}%;"></i></div>
+    </div>
+  `).join("") + `<p class="muted" style="font-size:.76rem;margin-top:10px;">Solid bar = your level · faint bar = what the role typically expects.</p>`;
+
+  const priority = rows.filter(r => r.gap > 0);
+  document.getElementById("gap-priority").innerHTML = priority.length ? priority.map((r,i) => `
+    <div class="flex-between" style="padding:10px 0;border-bottom:1px solid var(--line);">
+      <span><b>${i+1}.</b> ${r.skill}</span>
+      <span class="badge badge-closed">−${r.gap} pts</span>
+    </div>
+  `).join("") : `<p class="muted">You meet or exceed every requirement for this role. 🎉</p>`;
+}
+gapRoleSel.addEventListener("change", renderGap);
+renderGap();
+
+/* ---------- Mock interview scheduler ---------- */
+const MOCK_KEY = "tp_mock_interviews";
+const getMocks = () => JSON.parse(localStorage.getItem(MOCK_KEY) || "[]");
+const setMocks = (m) => localStorage.setItem(MOCK_KEY, JSON.stringify(m));
+
+function renderMocks() {
+  const mocks = getMocks();
+  document.getElementById("kpi-interviews").textContent = mocks.length;
+  document.getElementById("mock-list").innerHTML = mocks.length ? mocks.map((m, i) => `
+    <div class="card" style="margin-bottom:12px;">
+      <div class="flex-between">
+        <div>
+          <h3 style="margin-bottom:2px;">${m.type}</h3>
+          <p class="muted" style="font-size:.82rem;margin:0;">${m.date} at ${m.time} ${m.record ? "· 🎥 recording enabled" : ""}</p>
+        </div>
+        <span class="badge ${m.done ? 'badge-open' : 'badge-upcoming'}">${m.done ? 'Completed' : 'Scheduled'}</span>
+      </div>
+      ${m.done
+        ? `<div style="margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);"><b>Mentor feedback</b><p class="muted" style="font-size:.86rem;">Score: <b style="color:var(--brick);">${m.score}/10</b> — ${m.feedback}</p></div>`
+        : `<button class="btn btn-ghost btn-sm" data-complete="${i}" style="margin-top:10px;">Mark as completed (demo)</button>`
+      }
+    </div>
+  `).join("") : `<p class="muted">No sessions booked yet.</p>`;
+}
+renderMocks();
+
+document.getElementById("mock-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const mocks = getMocks();
+  mocks.push({
+    type: document.getElementById("m-type").value,
+    date: document.getElementById("m-date").value,
+    time: document.getElementById("m-time").value,
+    record: document.getElementById("m-record").checked,
+    done: false
+  });
+  setMocks(mocks);
+  renderMocks();
+  toast("Mock interview booked — a calendar invite has been emailed to you.");
+  e.target.reset();
+  document.getElementById("m-record").checked = true;
+});
+
+document.getElementById("mock-list").addEventListener("click", e => {
+  const btn = e.target.closest("[data-complete]");
+  if (!btn) return;
+  const mocks = getMocks();
+  const i = Number(btn.dataset.complete);
+  const feedbackBank = [
+    "Strong on fundamentals — work on structuring your answers with a clear beginning, middle, and end.",
+    "Good communication. Revisit time complexity trade-offs before your next technical round.",
+    "Confident delivery. Slow down slightly on behavioural questions to avoid rambling.",
+    "Clear problem-solving approach — practice dry-running your code out loud before submitting."
+  ];
+  mocks[i].done = true;
+  mocks[i].score = (6 + Math.floor(Math.random() * 4));
+  mocks[i].feedback = feedbackBank[Math.floor(Math.random() * feedbackBank.length)];
+  setMocks(mocks);
+  renderMocks();
+  toast("Feedback added to your session.");
+});
+
+/* ---------- My Applications ---------- */
+function renderApps() {
+  const apps = JSON.parse(localStorage.getItem("tp_my_applications") || "[]");
+  const rows = TP_DATA.drives.filter(d => apps.includes(d.id));
+  document.getElementById("kpi-apps").textContent = rows.length;
+  document.getElementById("apps-empty").classList.toggle("hidden", rows.length > 0);
+  document.getElementById("apps-body").innerHTML = rows.map(d => `
+    <tr><td><b>${d.company}</b></td><td>${new Date(d.date).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</td><td><span class="badge badge-applied">Applied</span></td></tr>
+  `).join("");
+}
+renderApps();
+
+/* ---------- Profile ---------- */
+const PROFILE_KEY = "tp_profile";
+const profile = JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}");
+document.getElementById("p-branch").value = profile.branch || "";
+document.getElementById("p-cgpa").value = profile.cgpa || "";
+document.getElementById("p-year").value = profile.year || "";
+
+function updateCompleteness() {
+  const filled = [document.getElementById("p-branch").value, document.getElementById("p-cgpa").value, document.getElementById("p-year").value].filter(Boolean).length;
+  document.getElementById("kpi-complete").textContent = Math.round(((filled + 1) / 4) * 100) + "%";
+}
+updateCompleteness();
+
+document.getElementById("profile-form").addEventListener("submit", e => {
+  e.preventDefault();
+  localStorage.setItem(PROFILE_KEY, JSON.stringify({
+    branch: document.getElementById("p-branch").value,
+    cgpa: document.getElementById("p-cgpa").value,
+    year: document.getElementById("p-year").value
+  }));
+  updateCompleteness();
+  toast("Profile saved.");
+});
+</script>
+</body>
+</html>

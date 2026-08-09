@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — Nalanda T&P Cell</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .auth-wrap { min-height: calc(100vh - 72px); display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .auth-box { width: 100%; max-width: 440px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 36px; box-shadow: var(--shadow-lift); }
+  .role-toggle { display: flex; background: var(--parchment-deep); border-radius: var(--radius); padding: 4px; margin-bottom: 28px; }
+  .role-toggle button { flex: 1; padding: 10px; border: none; background: none; border-radius: 4px; font-weight: 600; font-size: .88rem; color: var(--slate-soft); }
+  .role-toggle button.active { background: var(--ink); color: #fff; }
+  .auth-switch { text-align: center; margin-top: 18px; font-size: .88rem; }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10V20H15V14H9V20H3V10Z" fill="#EFE6D8"/></svg></span><span>Nalanda T&amp;P<small>College of Engineering, Chandi</small></span></a>
+    <ul class="nav-links"><li><a href="index.html">← Back to site</a></li></ul>
+    <div class="nav-cta"></div>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="role-toggle">
+      <button id="tab-student" class="active">Student</button>
+      <button id="tab-recruiter">Recruiter</button>
+    </div>
+
+    <div id="panel-student">
+      <p class="eyebrow">Student Portal</p>
+      <h2>Welcome back</h2>
+      <form id="student-form">
+        <div class="field"><label>Full name</label><input required placeholder="e.g. Aditi Sharma" id="s-name"></div>
+        <div class="field"><label>College email</label><input required type="email" placeholder="you@nalandace.ac.in" id="s-email"></div>
+        <div class="field"><label>Password</label><input required type="password" placeholder="••••••••"></div>
+        <button class="btn btn-primary btn-block" type="submit">Log in to dashboard</button>
+      </form>
+      <p class="auth-switch muted">New here? Registration happens automatically on first login for this demo.</p>
+    </div>
+
+    <div id="panel-recruiter" class="hidden">
+      <p class="eyebrow">Recruiter Portal</p>
+      <h2>Post a drive, track applicants</h2>
+      <form id="recruiter-form">
+        <div class="field"><label>Your name</label><input required placeholder="e.g. Kavya Iyer" id="r-name"></div>
+        <div class="field"><label>Company name</label><input required placeholder="e.g. Sterling Tech Labs" id="r-company"></div>
+        <div class="field"><label>Work email</label><input required type="email" placeholder="you@company.com" id="r-email"></div>
+        <div class="field"><label>Password</label><input required type="password" placeholder="••••••••"></div>
+        <button class="btn btn-primary btn-block" type="submit">Log in to recruiter dashboard</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+const tabS = document.getElementById("tab-student"), tabR = document.getElementById("tab-recruiter");
+const panelS = document.getElementById("panel-student"), panelR = document.getElementById("panel-recruiter");
+function showRecruiter() { tabR.classList.add("active"); tabS.classList.remove("active"); panelR.classList.remove("hidden"); panelS.classList.add("hidden"); }
+function showStudent() { tabS.classList.add("active"); tabR.classList.remove("active"); panelS.classList.remove("hidden"); panelR.classList.add("hidden"); }
+tabS.addEventListener("click", showStudent);
+tabR.addEventListener("click", showRecruiter);
+if (new URLSearchParams(location.search).get("as") === "recruiter") showRecruiter();
+
+document.getElementById("student-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("s-name").value || "Student";
+  const email = document.getElementById("s-email").value;
+  tpLogin("student", name, email);
+  window.location.href = "student-dashboard.html";
+});
+
+document.getElementById("recruiter-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = document.getElementById("r-name").value || "Recruiter";
+  const email = document.getElementById("r-email").value;
+  const company = document.getElementById("r-company").value || "Your Company";
+  const session = tpLogin("recruiter", name, email);
+  session.company = company;
+  localStorage.setItem("tp_session", JSON.stringify(session));
+  window.location.href = "recruiter-dashboard.html";
+});
+</script>
+</body>
+</html>

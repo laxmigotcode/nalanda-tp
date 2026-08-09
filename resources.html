@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resource Hub — Nalanda T&P Cell</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10V20H15V14H9V20H3V10Z" fill="#EFE6D8"/></svg></span><span>Nalanda T&amp;P<small>College of Engineering, Chandi</small></span></a>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="index.html">Home</a></li>
+      <li><a href="companies.html" data-page="companies.html">Companies</a></li>
+      <li><a href="drives.html" data-page="drives.html">Drives</a></li>
+      <li><a href="resources.html" data-page="resources.html" class="active">Resources</a></li>
+      <li><a href="alumni.html" data-page="alumni.html">Alumni</a></li>
+      <li><a href="contact.html" data-page="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm" data-login-link>Login</a>
+      <a href="#" class="btn btn-ink btn-sm hidden" data-user-badge></a>
+      <a href="login.html?as=recruiter" class="btn btn-primary btn-sm">Recruiter Portal</a>
+    </div>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <p class="eyebrow">Resume · Interview Prep · Skill Courses</p>
+    <h1>The Resource Hub</h1>
+    <p class="lede muted">Everything the T&amp;P Cell has collected from three placement seasons, organised in one place.</p>
+  </div>
+</header>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="flex gap-12" style="flex-wrap:wrap;margin-bottom:28px;" id="cat-filters">
+      <button class="btn btn-sm btn-ink" data-cat="all">All</button>
+    </div>
+    <div class="grid grid-3" id="resource-grid"></div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--paper);border-top:1px solid var(--line);">
+  <div class="container grid grid-2">
+    <div class="card">
+      <h3>🧭 Skill Gap Analyzer</h3>
+      <p class="muted">Log in to compare your skill profile against the roles you're targeting, and get a ranked list of what to fix first.</p>
+      <a href="student-dashboard.html" class="btn btn-outline btn-sm">Open in dashboard</a>
+    </div>
+    <div class="card">
+      <h3>🎥 Mock Interview Scheduler</h3>
+      <p class="muted">Book a recorded mock interview slot with a T&amp;P mentor and receive written feedback against a standard rubric.</p>
+      <a href="student-dashboard.html" class="btn btn-outline btn-sm">Book a slot</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-bottom"><span>© <span data-year></span> Training &amp; Placement Cell, Nalanda College of Engineering, Chandi.</span></div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+const cats = ["all", ...new Set(TP_DATA.resources.map(r => r.cat))];
+document.getElementById("cat-filters").innerHTML = cats.map(c => `<button class="btn btn-sm ${c==='all'?'btn-ink':'btn-ghost'}" data-cat="${c}">${c === 'all' ? 'All' : c}</button>`).join("");
+
+function renderResources(cat) {
+  const list = cat === "all" ? TP_DATA.resources : TP_DATA.resources.filter(r => r.cat === cat);
+  document.getElementById("resource-grid").innerHTML = list.map(r => `
+    <div class="card">
+      <span class="chip" style="margin-bottom:12px;display:inline-block;">${r.cat}</span>
+      <h3>${r.title}</h3>
+      <p class="muted" style="font-size:.9rem;">${r.desc}</p>
+      <div class="flex-between">
+        <span class="chip">${r.tag}</span>
+        <button class="btn btn-ghost btn-sm" data-get>Access</button>
+      </div>
+    </div>
+  `).join("");
+}
+renderResources("all");
+
+document.getElementById("cat-filters").addEventListener("click", e => {
+  const btn = e.target.closest("[data-cat]");
+  if (!btn) return;
+  document.querySelectorAll("#cat-filters button").forEach(b => b.className = "btn btn-sm btn-ghost");
+  btn.className = "btn btn-sm btn-ink";
+  renderResources(btn.dataset.cat);
+});
+
+document.getElementById("resource-grid").addEventListener("click", e => {
+  if (e.target.closest("[data-get]")) toast("This is a demo resource — connect real files to make this downloadable.");
+});
+</script>
+</body>
+</html>

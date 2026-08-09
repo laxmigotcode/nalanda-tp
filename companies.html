@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Companies — Nalanda T&P Cell</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand"><span class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10V20H15V14H9V20H3V10Z" fill="#EFE6D8"/></svg></span><span>Nalanda T&amp;P<small>College of Engineering, Chandi</small></span></a>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="index.html">Home</a></li>
+      <li><a href="companies.html" data-page="companies.html" class="active">Companies</a></li>
+      <li><a href="drives.html" data-page="drives.html">Drives</a></li>
+      <li><a href="resources.html" data-page="resources.html">Resources</a></li>
+      <li><a href="alumni.html" data-page="alumni.html">Alumni</a></li>
+      <li><a href="contact.html" data-page="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm" data-login-link>Login</a>
+      <a href="#" class="btn btn-ink btn-sm hidden" data-user-badge></a>
+      <a href="login.html?as=recruiter" class="btn btn-primary btn-sm">Recruiter Portal</a>
+    </div>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <p class="eyebrow">128 companies on record</p>
+    <h1>Recruiting companies</h1>
+    <p class="lede muted">Filter by hiring status or sector to find drives relevant to your branch.</p>
+  </div>
+</header>
+
+<section class="section-tight">
+  <div class="container">
+    <div class="flex gap-12" style="flex-wrap:wrap;margin-bottom:28px;" id="filters">
+      <button class="btn btn-sm btn-ink" data-filter="all">All</button>
+      <button class="btn btn-sm btn-ghost" data-filter="open">Open now</button>
+      <button class="btn btn-sm btn-ghost" data-filter="upcoming">Upcoming</button>
+      <button class="btn btn-sm btn-ghost" data-filter="closed">Closed</button>
+      <input type="text" id="search" placeholder="Search company or role…" style="margin-left:auto;padding:9px 14px;border:1.5px solid var(--line);border-radius:var(--radius);min-width:220px;background:var(--paper);">
+    </div>
+    <div class="grid grid-3" id="company-grid"></div>
+  </div>
+</section>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-bottom"><span>© <span data-year></span> Training &amp; Placement Cell, Nalanda College of Engineering, Chandi.</span></div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+let activeFilter = "all";
+let query = "";
+
+function cardHTML(c) {
+  return `
+    <div class="card company-card" id="${c.id}">
+      <div class="flex-between">
+        <div class="company-logo">${c.name[0]}</div>
+        <span class="badge badge-${c.status}">${c.status}</span>
+      </div>
+      <h3>${c.name}</h3>
+      <p class="muted" style="font-size:.85rem;margin-bottom:2px;">${c.role}</p>
+      <span class="company-ctc">${ctcRange(c.ctcMin, c.ctcMax)}</span>
+      <div class="company-meta"><span class="chip">${c.sector}</span><span class="chip">Drive: ${c.drive}</span></div>
+      <button class="btn btn-outline btn-sm" data-open="${c.id}">View full profile</button>
+    </div>`;
+}
+
+function render() {
+  let list = TP_DATA.companies.filter(c => activeFilter === "all" || c.status === activeFilter);
+  if (query) list = list.filter(c => (c.name + c.role + c.sector).toLowerCase().includes(query));
+  document.getElementById("company-grid").innerHTML = list.length
+    ? list.map(cardHTML).join("")
+    : `<p class="muted">No companies match that filter yet.</p>`;
+}
+render();
+
+document.getElementById("filters").addEventListener("click", e => {
+  const btn = e.target.closest("[data-filter]");
+  if (!btn) return;
+  activeFilter = btn.dataset.filter;
+  document.querySelectorAll("#filters [data-filter]").forEach(b => b.className = "btn btn-sm btn-ghost");
+  btn.className = "btn btn-sm btn-ink";
+  render();
+});
+document.getElementById("search").addEventListener("input", e => { query = e.target.value.toLowerCase(); render(); });
+
+document.getElementById("company-grid").addEventListener("click", e => {
+  const btn = e.target.closest("[data-open]");
+  if (!btn) return;
+  const c = TP_DATA.companies.find(x => x.id === btn.dataset.open);
+  document.getElementById("modal-body").innerHTML = `
+    <div class="company-logo" style="width:60px;height:60px;font-size:1.6rem;margin-bottom:16px;">${c.name[0]}</div>
+    <h2 style="margin-bottom:4px;">${c.name}</h2>
+    <p class="muted" style="margin-bottom:16px;">${c.role} · ${c.sector}</p>
+    <span class="badge badge-${c.status}" style="margin-bottom:18px;display:inline-block;">${c.status}</span>
+    <p>${c.desc}</p>
+    <table class="ledger-table" style="margin:18px 0;">
+      <tr><td class="muted">CTC offered</td><td><b>${ctcRange(c.ctcMin, c.ctcMax)}</b></td></tr>
+      <tr><td class="muted">Eligibility</td><td>${c.eligibility}</td></tr>
+      <tr><td class="muted">Drive date</td><td>${c.drive}</td></tr>
+      <tr><td class="muted">Openings</td><td>${c.openings || "Results published"}</td></tr>
+    </table>
+    <div class="flex gap-12">
+      <a href="student-dashboard.html" class="btn btn-primary">Register / Apply</a>
+      <a href="drives.html" class="btn btn-ghost">See full drive calendar</a>
+    </div>
+  `;
+  document.getElementById("modal").classList.add("open");
+});
+document.getElementById("modal-close").addEventListener("click", () => document.getElementById("modal").classList.remove("open"));
+document.getElementById("modal").addEventListener("click", e => { if (e.target.id === "modal") e.target.classList.remove("open"); });
+
+// Deep-link support: companies.html#tcs opens that company's modal
+if (location.hash) {
+  const id = location.hash.slice(1);
+  setTimeout(() => document.querySelector(`[data-open="${id}"]`)?.click(), 150);
+}
+</script>
+</body>
+</html>

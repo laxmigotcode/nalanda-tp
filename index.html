@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nalanda T&P Cell — Training & Placement, Nalanda College of Engineering</title>
+<meta name="description" content="Official Training & Placement Cell portal of Nalanda College of Engineering, Chandi — companies, drives, resources and dashboards for students and recruiters.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 10L12 4L21 10V20H15V14H9V20H3V10Z" fill="#EFE6D8"/></svg>
+      </span>
+      <span>Nalanda T&amp;P<small>College of Engineering, Chandi</small></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="index.html" class="active">Home</a></li>
+      <li><a href="companies.html" data-page="companies.html">Companies</a></li>
+      <li><a href="drives.html" data-page="drives.html">Drives</a></li>
+      <li><a href="resources.html" data-page="resources.html">Resources</a></li>
+      <li><a href="alumni.html" data-page="alumni.html">Alumni</a></li>
+      <li><a href="contact.html" data-page="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm" data-login-link>Login</a>
+      <a href="#" class="btn btn-ink btn-sm hidden" data-user-badge></a>
+      <a href="login.html?as=recruiter" class="btn btn-primary btn-sm">Recruiter Portal</a>
+    </div>
+    <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">Training &amp; Placement Cell · Est. records since 2011</p>
+      <h1>Where Nalanda's engineers begin their careers.</h1>
+      <p class="lede">A single ledger for every company, every drive and every offer moving through campus — built so students track opportunities and recruiters run drives without the back-and-forth emails.</p>
+      <div class="hero-actions">
+        <a href="drives.html" class="btn btn-primary">Explore Upcoming Drives</a>
+        <a href="login.html?as=recruiter" class="btn btn-outline">I'm Recruiting on Campus</a>
+      </div>
+      <div class="stat-plaques">
+        <div class="plaque"><span class="num" id="stat-rate">91%</span><span class="lbl">Placement rate</span></div>
+        <div class="plaque"><span class="num" id="stat-high">₹42L</span><span class="lbl">Highest CTC</span></div>
+        <div class="plaque"><span class="num" id="stat-avg">₹6.8L</span><span class="lbl">Average CTC</span></div>
+        <div class="plaque"><span class="num" id="stat-cos">128</span><span class="lbl">Companies visited</span></div>
+      </div>
+    </div>
+
+    <div class="ledger">
+      <div class="ledger-head">
+        <p class="eyebrow"><span class="live-dot"></span> Live Placement Ledger</p>
+        <span style="font-family:var(--mono);font-size:.7rem;color:rgba(255,255,255,.5)">Auto-refreshing</span>
+      </div>
+      <div class="ledger-track" data-ledger></div>
+    </div>
+  </div>
+</header>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">On Campus Now</p>
+        <h2>Companies actively hiring</h2>
+      </div>
+      <a href="companies.html" class="view-all">View all 128 companies →</a>
+    </div>
+    <div class="grid grid-4" id="home-companies"></div>
+  </div>
+</section>
+
+<section class="section section-tight" style="background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">The Drive Rail</p>
+        <h2>What's coming up</h2>
+      </div>
+      <a href="drives.html" class="view-all">Full calendar →</a>
+    </div>
+    <div class="rail" id="home-drives"></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Everything you need before the interview</p>
+        <h2>The Resource Hub</h2>
+      </div>
+      <a href="resources.html" class="view-all">Browse all resources →</a>
+    </div>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>📄 Resume Vault</h3>
+        <p class="muted">ATS-friendly templates and the exact checklist counsellors use for sign-off.</p>
+        <a href="resources.html" class="btn btn-ghost btn-sm">Open vault</a>
+      </div>
+      <div class="card">
+        <h3>🎥 Mock Interview Scheduler</h3>
+        <p class="muted">Book a slot, get recorded, receive structured feedback from a T&amp;P mentor within 48 hours.</p>
+        <a href="student-dashboard.html" class="btn btn-ghost btn-sm">Book a slot</a>
+      </div>
+      <div class="card">
+        <h3>🧭 Skill Gap Analyzer</h3>
+        <p class="muted">Compares your profile against the roles you want and tells you exactly what to fix first.</p>
+        <a href="student-dashboard.html" class="btn btn-ghost btn-sm">Analyze my skills</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight" style="background:var(--ink);color:#fff;">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow" style="color:var(--brass)">From the ledger, years later</p>
+        <h2 style="color:#fff">Alumni who walked this path</h2>
+      </div>
+      <a href="alumni.html" class="view-all" style="color:var(--brass);border-color:var(--brass)">Read more stories →</a>
+    </div>
+    <div class="grid grid-3" id="home-alumni"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>Nalanda T&amp;P Cell</h4>
+      <p style="max-width:32ch;font-size:.88rem;">Nalanda College of Engineering, Chandi, Nalanda, Bihar — 803108. Connecting students to careers since 2011.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <ul><li><a href="companies.html">Companies</a></li><li><a href="drives.html">Drives</a></li><li><a href="resources.html">Resources</a></li><li><a href="alumni.html">Alumni</a></li></ul>
+    </div>
+    <div>
+      <h4>Portals</h4>
+      <ul><li><a href="login.html">Student Login</a></li><li><a href="login.html?as=recruiter">Recruiter Login</a></li><li><a href="student-dashboard.html">Student Dashboard</a></li><li><a href="recruiter-dashboard.html">Recruiter Dashboard</a></li></ul>
+    </div>
+    <div>
+      <h4>Office Hours</h4>
+      <p style="font-size:.88rem;">Mon–Fri · 9:30 AM – 5:30 PM<br>Sat · 10:00 AM – 1:00 PM<br><a href="contact.html">Full contact details →</a></p>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© <span data-year></span> Training &amp; Placement Cell, Nalanda College of Engineering, Chandi.</span>
+    <span>Built for the student ↔ recruiter ecosystem.</span>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+  // Featured companies (open + upcoming, first 4)
+  const featured = TP_DATA.companies.filter(c => c.status !== "closed").slice(0, 4);
+  document.getElementById("home-companies").innerHTML = featured.map(c => `
+    <a href="companies.html#${c.id}" class="card company-card">
+      <div class="flex-between">
+        <div class="company-logo">${c.name[0]}</div>
+        <span class="badge badge-${c.status}">${c.status}</span>
+      </div>
+      <h3>${c.name}</h3>
+      <p class="muted" style="font-size:.85rem;margin-bottom:6px;">${c.role}</p>
+      <span class="company-ctc">${ctcRange(c.ctcMin, c.ctcMax)}</span>
+      <div class="company-meta"><span class="chip">${c.sector}</span><span class="chip">${c.drive}</span></div>
+    </a>
+  `).join("");
+
+  // Upcoming drives rail
+  const upcoming = TP_DATA.drives.filter(d => d.status !== "closed").slice(0, 6);
+  document.getElementById("home-drives").innerHTML = upcoming.map(d => {
+    const dt = new Date(d.date);
+    return `
+    <div class="card rail-card">
+      <div class="rail-date">${dt.getDate()}<span>${dt.toLocaleString('en-US',{month:'short'})} ${dt.getFullYear()}</span></div>
+      <h3 style="margin-top:10px;">${d.company}</h3>
+      <p class="muted" style="font-size:.85rem;">${d.type}</p>
+      <div class="flex-between">
+        <span class="badge badge-${d.status}">${d.stage}</span>
+      </div>
+    </div>`;
+  }).join("");
+
+  // Alumni preview
+  document.getElementById("home-alumni").innerHTML = TP_DATA.alumni.slice(0, 3).map(a => `
+    <div class="card" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.14);">
+      <div class="flex gap-12" style="margin-bottom:14px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:${a.avatarColor};display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;color:#fff;">${a.name[0]}</div>
+        <div>
+          <b style="color:#fff;display:block;">${a.name}</b>
+          <span style="font-size:.78rem;color:rgba(255,255,255,.6)">${a.role}, ${a.company} · '${a.batch.slice(2)}</span>
+        </div>
+      </div>
+      <p style="color:rgba(255,255,255,.85);font-size:.9rem;font-style:italic;">"${a.quote}"</p>
+    </div>
+  `).join("");
+</script>
+</body>
+</html>
